@@ -12,10 +12,11 @@ model College {
   id          Int          @id @default(autoincrement())
   name        String
   location    String
-  fees        Int          // per year, in INR
+  fees        Int
   rating      Float        @default(0)
   established Int?
-  type        String       // "Government" | "Private" | "Deemed"
+  type        String
+  image       String?      // ← ye naya field
   courses     Course[]
   placements  Placement[]
   reviews     Review[]
@@ -25,7 +26,6 @@ model College {
   @@index([fees])
   @@index([rating])
 }
-
 model Course {
   id         Int      @id @default(autoincrement())
   name       String

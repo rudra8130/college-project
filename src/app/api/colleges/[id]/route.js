@@ -6,7 +6,6 @@ export async function GET(request, { params }) {
     const { id } = await params;
     const collegeId = Number(id);
 
-    // validate ki id ek valid number hai
     if (!Number.isInteger(collegeId) || collegeId <= 0) {
       return NextResponse.json(
         { error: 'Invalid college ID' },

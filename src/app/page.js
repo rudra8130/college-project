@@ -39,14 +39,12 @@ export default function Home() {
     fetchColleges();
   }
 
-  // High quality Unsplash campus images for fallback
-  const sampleImages = [
-    'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1592280771190-3e2e4d571952?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1571260899304-425eee4c7efc?auto=format&fit=crop&w=800&q=80'
-  ];
+  // Real photo agar DB mein hai (Wikipedia se seed ke time fetch ki gayi),
+  // warna reliable placeholder — kabhi broken image nahi dikhega
+  function getCollegeImage(c) {
+    if (c.image) return c.image;
+    return `https://placehold.co/800x600/1e293b/94a3b8?text=${encodeURIComponent(c.name)}`;
+  }
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#090d16', color: '#f8fafc', fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", position: 'relative', overflowX: 'hidden' }}>
@@ -214,8 +212,8 @@ export default function Home() {
             gap: '1.75rem', 
             marginBottom: '3rem' 
           }}>
-            {colleges.map((c, index) => {
-              const campusImg = c.image || sampleImages[index % sampleImages.length];
+            {colleges.map((c) => {
+              const campusImg = getCollegeImage(c);
               return (
                 <div key={c.id} className="glass-card college-card" style={{ borderRadius: '1.25rem', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                   
@@ -226,6 +224,11 @@ export default function Home() {
                       alt={c.name} 
                       className="college-img"
                       style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)' }} 
+                      onError={(e) => {
+                        // agar real photo bhi kisi wajah se load na ho, placeholder pe fallback
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = `https://placehold.co/800x600/1e293b/94a3b8?text=${encodeURIComponent(c.name)}`;
+                      }}
                     />
                     <div style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(15, 23, 42, 0.75)', backdropFilter: 'blur(8px)', padding: '0.3rem 0.75rem', borderRadius: '9999px', fontSize: '0.85rem', fontWeight: '700', color: '#fbbf24', border: '1px solid rgba(251, 191, 36, 0.3)' }}>
                       ★ {c.rating || 'N/A'}
